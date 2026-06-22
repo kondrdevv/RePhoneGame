@@ -1,0 +1,2100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Re:Phone Game 4.0</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --glass-bg: rgba(18, 18, 28, 0.85);
+            --neon-cyan: #00f3ff;
+            --neon-purple: #bc13fe;
+            --neon-green: #39ff14;
+            --neon-red: #ff3366;
+            --gold: #ffcc00;
+            --text-light: #f0f0f0;
+            --text-dim: #a0a0c0;
+            --border-light: rgba(0, 243, 255, 0.3);
+            --card-bg: rgba(18, 18, 28, 0.85);
+            --body-gradient: radial-gradient(circle at 20% 30%, #0a0a15, #03030a);
+            --transition-smooth: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        }
+        body.light {
+            --bg-dark: #e0e0e8;
+            --glass-bg: rgba(240,240,250,0.9);
+            --neon-cyan: #0088aa;
+            --neon-purple: #8844cc;
+            --neon-green: #228822;
+            --neon-red: #cc3366;
+            --gold: #aa8800;
+            --text-light: #111;
+            --text-dim: #444;
+            --border-light: rgba(0,136,170,0.3);
+            --card-bg: rgba(240,240,250,0.9);
+            --body-gradient: radial-gradient(circle at 20% 30%, #d0d0e0, #f0f0f8);
+        }
+        body.cyberpunk {
+            --bg-dark: #0a001a;
+            --glass-bg: rgba(20,0,40,0.9);
+            --neon-cyan: #ff00ff;
+            --neon-purple: #00ffff;
+            --neon-green: #ffaa00;
+            --neon-red: #ff3300;
+            --gold: #ffcc00;
+            --text-light: #ffccff;
+            --text-dim: #cc99ff;
+            --border-light: rgba(255,0,255,0.5);
+            --card-bg: rgba(20,0,40,0.9);
+            --body-gradient: radial-gradient(circle at 20% 30%, #0a001a, #1a0030);
+        }
+        body.vintage {
+            --bg-dark: #2b1e0f;
+            --glass-bg: rgba(60,40,20,0.85);
+            --neon-cyan: #c0a050;
+            --neon-purple: #b08040;
+            --neon-green: #6b8c42;
+            --neon-red: #a04e2a;
+            --gold: #d4af37;
+            --text-light: #f5e6d3;
+            --text-dim: #c9b28b;
+            --border-light: rgba(192,160,80,0.5);
+            --card-bg: rgba(60,40,20,0.85);
+            --body-gradient: radial-gradient(circle at 20% 30%, #2b1e0f, #1a1208);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: var(--body-gradient);
+            color: var(--text-light);
+            height: 100vh;
+            overflow: hidden;
+            font-family: var(--font-family);
+            transition: background 0.3s ease;
+        }
+        .app-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        header {
+            background: rgba(10, 10, 20, 0.7);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-light);
+            padding: 8px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition-smooth);
+        }
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-cyan));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .version-badge {
+            background: #2c2c3a;
+            padding: 2px 8px;
+            border-radius: 40px;
+            font-size: 10px;
+            margin-left: 10px;
+            color: var(--gold);
+        }
+        .main-stats {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .stat-box {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            padding: 4px 12px;
+            border-radius: 40px;
+            border: 1px solid var(--border-light);
+            text-align: center;
+            transition: var(--transition-smooth);
+        }
+        .stat-box:hover {
+            transform: scale(1.05);
+            border-color: var(--neon-cyan);
+        }
+        .stat-label {
+            font-size: 8px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+        .stat-value {
+            font-weight: 800;
+            font-size: 1.2rem;
+            font-family: 'Montserrat', monospace;
+        }
+        .val-money {
+            color: var(--neon-green);
+        }
+        .val-rep {
+            color: var(--gold);
+        }
+        #game-container {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+        }
+        aside {
+            width: 260px;
+            background: rgba(10, 10, 20, 0.6);
+            backdrop-filter: blur(12px);
+            border-right: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            flex-shrink: 0;
+            transition: var(--transition-smooth);
+        }
+        .nav-item {
+            padding: 10px 16px;
+            margin: 4px 12px;
+            cursor: pointer;
+            border-radius: 14px;
+            transition: var(--transition-smooth);
+            font-weight: 600;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--text-light);
+        }
+        .nav-item:hover {
+            background: rgba(0, 243, 255, 0.1);
+            border-color: var(--neon-cyan);
+            transform: translateX(4px);
+        }
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(0,243,255,0.2), transparent);
+            border-left: 3px solid var(--neon-cyan);
+            border-radius: 14px 8px 8px 14px;
+            color: var(--neon-cyan);
+        }
+        .nav-sub {
+            padding-left: 32px;
+            font-size: 11px;
+            background: rgba(0,0,0,0.3);
+        }
+        .nav-sub .nav-item {
+            margin-left: 20px;
+            padding: 6px 12px;
+        }
+        main {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            transition: var(--transition-smooth);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-light);
+            border-radius: 28px;
+            padding: 18px;
+            transition: var(--transition-smooth);
+            position: relative;
+        }
+        .card:hover {
+            border-color: var(--neon-cyan);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3), 0 0 15px rgba(0,243,255,0.2);
+        }
+        .tag {
+            font-size: 10px;
+            padding: 4px 10px;
+            border-radius: 40px;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+        .tag-tier1 {
+            background: #2c2c3a;
+        }
+        .tag-tier2 {
+            background: var(--neon-cyan);
+            color: #000;
+        }
+        .tag-tier3 {
+            background: var(--gold);
+            color: #000;
+        }
+        .tag-stolen {
+            background: #ff6600;
+            color: #000;
+        }
+        .tag-clean {
+            background: #2a8c2a;
+        }
+        .btn {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 6px 14px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 11px;
+            transition: var(--transition-smooth);
+            margin-top: 10px;
+            display: inline-block;
+            text-align: center;
+            font-family: var(--font-family);
+        }
+        .btn:hover:not(:disabled) {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 12px var(--neon-cyan);
+            transform: scale(1.05);
+        }
+        .btn-buy {
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+        }
+        .btn-buy:hover {
+            background: var(--neon-green);
+            color: #000;
+        }
+        .btn-danger {
+            border-color: var(--neon-red);
+            color: var(--neon-red);
+        }
+        .btn-danger:hover {
+            background: var(--neon-red);
+            color: #fff;
+        }
+        #log-panel {
+            width: 290px;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(12px);
+            border-left: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            transition: var(--transition-smooth);
+        }
+        .log-title {
+            padding: 12px;
+            font-weight: bold;
+            border-bottom: 1px solid var(--border-light);
+        }
+        #news-feed {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .news-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 10px;
+            border-left: 4px solid var(--neon-cyan);
+            animation: fadeIn 0.3s ease;
+            font-size: 11px;
+            transition: var(--transition-smooth);
+        }
+        .news-card.trend {
+            border-left-color: var(--neon-green);
+        }
+        .news-card.police {
+            border-left-color: var(--neon-red);
+        }
+        .news-card.achievement {
+            border-left-color: var(--gold);
+        }
+        .news-card.collectible {
+            border-left-color: var(--neon-purple);
+        }
+        .news-card.sale {
+            border-left-color: var(--neon-green);
+        }
+        .news-card.repair {
+            border-left-color: var(--neon-cyan);
+        }
+        .news-card.info {
+            border-left-color: var(--neon-cyan);
+        }
+        .news-time {
+            font-size: 9px;
+            color: var(--text-dim);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .progress-container {
+            height: 6px;
+            background: #2a2a2a;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-cyan), #0099ff);
+            width: 0%;
+            transition: width 0.2s;
+        }
+        input,
+        select {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid #3a3a4a;
+            padding: 8px 12px;
+            border-radius: 40px;
+            color: white;
+            width: 100%;
+            margin: 6px 0;
+            font-family: var(--font-family);
+            transition: var(--transition-smooth);
+        }
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--neon-cyan);
+        }
+        .suggested {
+            font-size: 10px;
+            color: var(--neon-green);
+        }
+        .imei-info {
+            background: rgba(0,0,0,0.4);
+            border-radius: 20px;
+            padding: 4px 8px;
+            font-size: 11px;
+            margin: 8px 0;
+            text-align: center;
+        }
+        .seller-info {
+            font-size: 10px;
+            color: var(--text-dim);
+            margin-top: 4px;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(12px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1500;
+        }
+        .modal-card {
+            background: var(--card-bg);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 32px;
+            padding: 24px;
+            max-width: 90%;
+            width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            transition: var(--transition-smooth);
+        }
+        .flex-btns {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .mini-game {
+            text-align: center;
+            padding: 20px;
+        }
+        .target-bar {
+            width: 100%;
+            height: 60px;
+            background: #1e1e2a;
+            border-radius: 30px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .slider {
+            width: 60px;
+            height: 60px;
+            background: var(--neon-cyan);
+            border-radius: 30px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: left 0.01s linear;
+            box-shadow: 0 0 20px var(--neon-cyan);
+            z-index: 2;
+        }
+        .target-zone {
+            position: absolute;
+            height: 60px;
+            background: rgba(57,255,20,0.4);
+            border: 2px solid var(--neon-green);
+            border-radius: 30px;
+            top: 0;
+            z-index: 1;
+            transition: var(--transition-smooth);
+        }
+        canvas {
+            width: 100%;
+            height: 120px;
+            border-radius: 16px;
+            background: rgba(0,0,0,0.3);
+        }
+        @media (max-width: 800px) {
+            aside {
+                width: 220px;
+            }
+            #log-panel {
+                width: 260px;
+            }
+            .stat-value {
+                font-size: 1rem;
+            }
+        }
+        @media (max-width: 650px) {
+            #log-panel {
+                display: none;
+            }
+            aside {
+                width: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app-wrapper">
+    <header>
+        <div class="logo"><span id="brand-name">Re:Phone</span> <span class="version-badge">v4.0</span></div>
+        <div class="main-stats">
+            <div class="stat-box"><span class="stat-label">💰 БАЛАНС</span><span class="stat-value val-money" id="stat-money">100 000</span></div>
+            <div class="stat-box"><span class="stat-label">⭐ РЕПУТАЦИЯ</span><span class="stat-value val-rep" id="stat-rep">0</span></div>
+            <div class="stat-box"><span class="stat-label">📦 СКЛАД</span><span class="stat-value" id="stat-inv">0 / 8</span></div>
+            <div class="stat-box"><span class="stat-label">🏪 МАГАЗИНОВ</span><span class="stat-value" id="stat-stores">1</span></div>
+            <div class="stat-box"><span class="stat-label">📈 ТРЕНД</span><span class="stat-value" id="trend-indicator">—</span></div>
+        </div>
+    </header>
+    <div id="game-container">
+        <aside id="nav-aside"></aside>
+        <main id="content"></main>
+        <div id="log-panel">
+            <div class="log-title">📰 НОВОСТИ</div>
+            <div id="news-feed"></div>
+        </div>
+    </div>
+</div>
+
+<div id="game-over-modal" class="overlay"><div class="modal-card"><h2 style="color:var(--neon-red);">💸 БАНКРОТСТВО</h2><p>Вы можете начать заново.</p><div class="flex-btns"><button class="btn" id="restart-btn">НОВАЯ ИГРА</button><button class="btn" id="close-gameover">ЗАКРЫТЬ</button></div></div></div>
+<div id="tutorial-modal" class="overlay" style="display: none;"><div class="modal-card"><h2 style="color:var(--neon-cyan);">📱 Re:Phone Game 4.0 — ПОЛНАЯ ВЕРСИЯ</h2><p>✨ Клиентская база, Бизнес-план, ReCoin, прокачка магазинов, график доходов, новостная лента и улучшенный дизайн. </p><hr><div class="flex-btns"><button class="btn" id="close-tutorial" style="background:var(--neon-cyan);color:#000;">ДАЛЕЕ</button></div></div></div>
+<div id="brand-modal" class="overlay"><div class="modal-card"><h3>🏆 Назовите свой бренд</h3><input type="text" id="brand-input" placeholder="Например: TechZone, iCave" maxlength="30"><div class="flex-btns"><button class="btn" id="confirm-brand">СТАТЬ ЛЕГЕНДОЙ</button></div></div></div>
+<div id="mini-game-modal" class="overlay" style="display: none;"><div class="modal-card"><h3>🔧 Ремонт: попади в зелёную зону</h3><div class="mini-game"><div class="target-bar" id="target-bar"><div class="slider" id="slider"></div><div class="target-zone" id="target-zone"></div></div><button class="btn" id="stop-repair">СТОП!</button></div></div></div>
+<div id="trade-modal" class="overlay" style="display: none;"><div class="modal-card"><h3>💰 Торг с клиентом</h3><p id="trade-message"></p><div class="flex-btns"><button class="btn" id="trade-accept">ПРИНЯТЬ</button><button class="btn" id="trade-decline">ОТКАЗАТЬ</button></div></div></div>
+<div id="collectible-auction-modal" class="overlay"><div class="modal-card"><h3>🏺 КОЛЛЕКЦИОННЫЙ АУКЦИОН</h3><div id="collectible-content"></div><div class="flex-btns"><button class="btn" id="bid-collectible">СДЕЛАТЬ СТАВКУ (+1000₽)</button><button class="btn" id="close-collectible">ЗАКРЫТЬ</button></div></div></div>
+<div id="tutorial-step-modal" class="overlay"><div class="modal-card"><h3 id="tutorial-title">📚 Обучение</h3><p id="tutorial-desc"></p><div class="flex-btns"><button class="btn" id="tutorial-next">ДАЛЕЕ</button></div></div></div>
+
+<script>
+    const MODELS_DB = [
+        { id: 1, name: 'iPhone 8', basePrice: 5000, tier: 1, brand: 'apple' },
+        { id: 2, name: 'iPhone X', basePrice: 9000, tier: 1, brand: 'apple' },
+        { id: 3, name: 'iPhone 11', basePrice: 11000, tier: 1, brand: 'apple' },
+        { id: 4, name: 'iPhone 12', basePrice: 14000, tier: 2, brand: 'apple' },
+        { id: 5, name: 'iPhone 13 Pro', basePrice: 27000, tier: 2, brand: 'apple' },
+        { id: 6, name: 'iPhone 14', basePrice: 28000, tier: 2, brand: 'apple' },
+        { id: 7, name: 'iPhone 15 Pro', basePrice: 40000, tier: 3, brand: 'apple' },
+        { id: 8, name: 'iPhone 16', basePrice: 42000, tier: 3, brand: 'apple' },
+        { id: 9, name: 'iPhone 17 Pro', basePrice: 90000, tier: 3, brand: 'apple' },
+        { id: 10, name: 'Samsung A54', basePrice: 10000, tier: 1, brand: 'samsung' },
+        { id: 11, name: 'Samsung S23 Ultra', basePrice: 38000, tier: 3, brand: 'samsung' },
+        { id: 12, name: 'Samsung S24', basePrice: 30000, tier: 3, brand: 'samsung' },
+        { id: 13, name: 'Samsung S25 FE', basePrice: 35000, tier: 3, brand: 'samsung' },
+        { id: 14, name: 'Samsung S26 Ultra', basePrice: 90000, tier: 3, brand: 'samsung' },
+        { id: 15, name: 'Xiaomi 15T', basePrice: 32000, tier: 2, brand: 'xiaomi' },
+        { id: 16, name: 'Redmi Note 13', basePrice: 14000, tier: 1, brand: 'xiaomi' },
+        { id: 17, name: 'Nokia 3310', basePrice: 3000, tier: 1, brand: 'nokia' },
+        { id: 18, name: 'Google Pixel 10', basePrice: 55000, tier: 3, brand: 'google' },
+        { id: 19, name: 'Nothing Phone (2)', basePrice: 20000, tier: 2, brand: 'nothing' },
+        { id: 20, name: 'Sony Xperia 1 V', basePrice: 30000, tier: 3, brand: 'sony' }
+    ];
+
+    const DEFECTS = [
+        { id: 'lcd', name: 'Разбит экран', part: 'Экран', costMult: 0.3, allowedBrands: 'all' },
+        { id: 'bat', name: 'Износ АКБ', part: 'Батарея', costMult: 0.1, allowedBrands: 'all' },
+        { id: 'port', name: 'Гнездо зарядки', part: 'Шлейф', costMult: 0.05, allowedBrands: 'all' },
+        { id: 'face', name: 'Face ID', part: 'Сенсор', costMult: 0.2, allowedBrands: ['apple'] }
+    ];
+
+    const PARTS_CATALOG = [
+        { id: 'lcd_copy', name: 'Экран (Копия)', type: 'lcd', basePrice: 3000, quality: 0.6 },
+        { id: 'lcd_orig', name: 'Экран (Ориг)', type: 'lcd', basePrice: 8000, quality: 1.0 },
+        { id: 'bat_copy', name: 'АКБ (Китай)', type: 'bat', basePrice: 800, quality: 0.5 },
+        { id: 'bat_orig', name: 'АКБ (Premium)', type: 'bat', basePrice: 2500, quality: 0.95 },
+        { id: 'port_copy', name: 'Шлейф (копия)', type: 'port', basePrice: 500, quality: 0.6 },
+        { id: 'port_orig', name: 'Шлейф (ориг)', type: 'port', basePrice: 1500, quality: 0.95 },
+        { id: 'face_copy', name: 'Face ID (копия)', type: 'face', basePrice: 3500, quality: 0.55 },
+        { id: 'face_orig', name: 'Face ID (ориг)', type: 'face', basePrice: 12000, quality: 1.0 }
+    ];
+
+    const SELLERS = {
+        official: ['iStore', 'Samsung Plaza', 'Xiaomi Official', 'Re:Store'],
+        refurb: ['Re:Store Refurb', 'MobileFix Certified', 'Green Apple'],
+        budget: ['Анна', 'Дмитрий', 'Сергей', 'Елена'],
+        vip: ['Gorbushka Exclusive', 'Elite Digital', 'Premium Club'],
+        blackmarket: ['Тёмный барыга', 'Серый дилер', 'Спекулянт'],
+        ozon: ['Ozon Маркет', 'Ozon fresh'],
+        aliexpress: ['AliExpress Choice', 'SuperDeal', 'Global Store']
+    };
+
+    const APPS_LIST = [
+        { id: 'budget', name: '🛒 Авито', requiredLevel: 1, price: 0 },
+        { id: 'official', name: '🏢 Официальный магазин', requiredLevel: 2, price: 100 },
+        { id: 'refurb', name: '🔄 Восстановленные', requiredLevel: 2, price: 80 },
+        { id: 'blackmarket', name: '🌑 Чёрный рынок', requiredLevel: 3, price: 150 },
+        { id: 'vip', name: '✨ Горбушка', requiredLevel: 5, price: 300 },
+        { id: 'auction', name: '🔨 Аукцион', requiredLevel: 3, price: 120 },
+        { id: 'ozon', name: '📦 Ozon (только новые)', requiredLevel: 2, price: 150 },
+        { id: 'aliexpress', name: '📦 AliExpress (случайные)', requiredLevel: 2, price: 100 }
+    ];
+
+    const ACHIEVEMENTS = [
+        { id: 'repair10', name: '🔧 Любитель', desc: 'Отремонтировать 10 телефонов', target: 10, rewardRep: 30, rewardMoney: 5000, type: 'repairs' },
+        { id: 'repair50', name: '⚙️ Мастер', desc: 'Отремонтировать 50 телефонов', target: 50, rewardRep: 100, rewardMoney: 20000, type: 'repairs' },
+        { id: 'million', name: '💰 Миллионер', desc: 'Заработать 1 000 000 ₽', target: 1000000, rewardRep: 200, rewardMoney: 100000, type: 'totalEarned' },
+        { id: 'staff', name: '👥 Кадровик', desc: 'Нанять всех сотрудников', target: 3, rewardRep: 80, rewardMoney: 30000, type: 'employeesHired' },
+        { id: 'trend5', name: '📈 Трендсеттер', desc: 'Продать 5 телефонов во время тренда', target: 5, rewardRep: 50, rewardMoney: 15000, type: 'trendSales' },
+        { id: 'collector', name: '🏺 Коллекционер', desc: 'Купить редкий коллекционный телефон', target: 1, rewardRep: 100, rewardMoney: 50000, type: 'rarePurchased' }
+    ];
+
+    const CLIENT_NAMES = ['Алексей', 'Мария', 'Дмитрий', 'Елена', 'Сергей', 'Анна', 'Иван', 'Ольга', 'Николай', 'Татьяна'];
+    const CLIENT_PROFESSIONS = ['студент', 'бизнесмен', 'айтишник', 'фрилансер', 'врач', 'учитель', 'дизайнер', 'маркетолог', 'юрист', 'пенсионер'];
+
+    class Game {
+        constructor() {
+            this.money = 100000;
+            this.rep = 0;
+            this.lvl = 1;
+            this.inventory = [];
+            this.parts = [];
+            this.markets = { official: [], refurb: [], budget: [], vip: [], blackmarket: [], ozon: [], aliexpress: [] };
+            this.currentTab = 'main';
+            this.skills = { repairSpeed: 0, trading: 0 };
+            this.gameLoop = null;
+            this.saveInterval = null;
+            this.isGameOver = false;
+            this.pendingRepair = null;
+            this.maxInv = 8;
+            this.shopOrder = [];
+            this.hiddenShopItems = [];
+            this.loans = [];
+            this.auctionItem = null;
+            this.auctionEndTime = 0;
+            this.auctionInterval = null;
+            this.crazyMode = false;
+            this.crazyModeUnlocked = false;
+            this.clientTypes = ['collector', 'reseller', 'student', 'businessman'];
+            this.currentTheme = 'dark';
+            this.unlockedMarkets = ['budget'];
+            this.stores = 1;
+            this.storeUpgradeCost = 150000;
+            this.lotteryCooldown = 0;
+            this.lastLotteryTimestamp = Date.now();
+            this.activeOrders = [];
+            this.employees = { seller: null, repairer: null, manager: null };
+            this.deliveries = [];
+            this.deliveryIdCounter = 1;
+            this.dayCounter = 0;
+            this.brandName = "Re:Phone";
+            this.achievements = [];
+            this.stats = { repairsCount: 0, totalSalesAmount: 0, employeesHiredCount: 0, trendSalesCount: 0, rarePurchased: 0 };
+            this.trendActive = false;
+            this.trendModelId = null;
+            this.trendMultiplier = 1.0;
+            this.trendEndTime = 0;
+            this.customerBase = [];
+            this.collectibleAuction = null;
+            this.collectibleEndTime = 0;
+            this.collectibleInterval = null;
+            this.newsFeed = [];
+            this.storeUpgrades = [{ interior: 0, security: 0, marketing: 0 }];
+            this.recoinBalance = 0;
+            this.recoinRate = 100;
+            this.recoinRateHistory = [100];
+            this.businessPlan = [];
+            this.historyMoney = [100000];
+            this.applyTheme();
+            this.generateAllMarkets();
+            this.startLoops();
+            this.initTrendCycle();
+            this.initCollectibleCycle();
+            this.initBusinessPlan();
+        }
+
+        encodeSave(data) { let str = JSON.stringify(data); let encoded = btoa(encodeURIComponent(str)); let key = 0x5A; let obf = ''; for(let i=0;i<encoded.length;i++) obf += String.fromCharCode(encoded.charCodeAt(i) ^ key); return obf; }
+        decodeSave(obf) { try { let key = 0x5A; let decoded = ''; for(let i=0;i<obf.length;i++) decoded += String.fromCharCode(obf.charCodeAt(i) ^ key); let str = decodeURIComponent(atob(decoded)); return JSON.parse(str); } catch(e) { return null; } }
+        saveGame() {
+            if(this.isGameOver) return;
+            const data = {
+                money:this.money, rep:this.rep, lvl:this.lvl, inventory:this.inventory, parts:this.parts,
+                skills:this.skills, loans:this.loans, shopOrder:this.shopOrder, hiddenShopItems:this.hiddenShopItems,
+                currentTheme:this.currentTheme, unlockedMarkets:this.unlockedMarkets, crazyMode:this.crazyMode,
+                crazyModeUnlocked:this.crazyModeUnlocked, deliveries:this.deliveries, deliveryIdCounter:this.deliveryIdCounter,
+                employees:this.employees, activeOrders:this.activeOrders, stores:this.stores,
+                storeUpgradeCost:this.storeUpgradeCost, lotteryCooldown:this.lotteryCooldown,
+                lastLotteryTimestamp:this.lastLotteryTimestamp, brandName:this.brandName, achievements:this.achievements,
+                stats:this.stats, customerBase:this.customerBase, trendActive:this.trendActive, trendModelId:this.trendModelId,
+                trendMultiplier:this.trendMultiplier, trendEndTime:this.trendEndTime,
+                collectibleAuction:this.collectibleAuction, collectibleEndTime:this.collectibleEndTime,
+                newsFeed: this.newsFeed.slice(-50), storeUpgrades: this.storeUpgrades,
+                recoinBalance: this.recoinBalance, recoinRateHistory: this.recoinRateHistory.slice(-60),
+                businessPlan: this.businessPlan, historyMoney: this.historyMoney.slice(-60)
+            };
+            localStorage.setItem('rephone_save_v4', this.encodeSave(data));
+            this.addNews('info', '💾 Игра сохранена');
+        }
+        loadGame() {
+            let raw = localStorage.getItem('rephone_save_v4');
+            if(!raw) return false;
+            let data = this.decodeSave(raw);
+            if(!data) { this.addNews('info', '❌ Файл сохранения повреждён'); return false; }
+            Object.assign(this, data);
+            if(!this.storeUpgrades || this.storeUpgrades.length < this.stores) {
+                while(this.storeUpgrades.length < this.stores) this.storeUpgrades.push({ interior:0, security:0, marketing:0 });
+            }
+            if(!this.recoinRateHistory) this.recoinRateHistory = [100];
+            if(!this.businessPlan) this.businessPlan = [];
+            if(!this.historyMoney) this.historyMoney = [this.money];
+            this.applyTheme();
+            this.addNews('info', '📀 Загрузка выполнена');
+            this.updateLevel();
+            return true;
+        }
+        resetGame() { this.stopLoops(); localStorage.removeItem('rephone_save_v4'); location.reload(); }
+        stopLoops() { if(this.gameLoop) clearInterval(this.gameLoop); if(this.saveInterval) clearInterval(this.saveInterval); if(this.auctionInterval) clearInterval(this.auctionInterval); if(this.collectibleInterval) clearInterval(this.collectibleInterval); }
+        startLoops() {
+            this.gameLoop = setInterval(() => {
+                if(this.isGameOver) return;
+                this.updateLotteryCooldown();
+                this.processDeliveries();
+                this.processOrdersTimeout();
+                this.processSales();
+                this.policeCheck();
+                this.processEmployees();
+                this.dayCounter++;
+                if(this.dayCounter>=30){ this.paySalaries(); this.dayCounter=0; }
+                this.updateStats();
+                if(this.auctionItem && Date.now()>=this.auctionEndTime) this.finishAuction();
+                if(Math.random()<0.02) this.generateOrder();
+                this.checkRecommendations();
+                this.checkBusinessPlan();
+                this.updateRecoinRate();
+                this.historyMoney.push(this.money);
+                if(this.historyMoney.length > 60) this.historyMoney.shift();
+            }, 1000);
+            this.saveInterval = setInterval(() => { if(!this.isGameOver) this.saveGame(); }, 30000);
+        }
+
+        addNews(type, message) {
+            this.newsFeed.push({ type, message, time: Date.now() });
+            if(this.newsFeed.length > 50) this.newsFeed.shift();
+            this.renderNews();
+        }
+
+        renderNews() {
+            const feed = document.getElementById('news-feed');
+            if(!feed) return;
+            feed.innerHTML = '';
+            for(let i=this.newsFeed.length-1; i>=0; i--) {
+                const item = this.newsFeed[i];
+                const card = document.createElement('div');
+                card.className = `news-card ${item.type}`;
+                const iconMap = { trend:'📈', police:'🚨', achievement:'🏆', collectible:'💎', sale:'✅', repair:'🔧', info:'ℹ️' };
+                const icon = iconMap[item.type] || '📌';
+                card.innerHTML = `${icon} ${item.message} <div class="news-time">${new Date(item.time).toLocaleTimeString()}</div>`;
+                feed.appendChild(card);
+            }
+        }
+
+        playSound(type) { try { let ctx = new (window.AudioContext || window.webkitAudioContext)(); let osc = ctx.createOscillator(); let gain = ctx.createGain(); osc.connect(gain); gain.connect(ctx.destination); osc.type = 'sine'; gain.gain.value = 0.1; if(type==='buy') { osc.frequency.value = 880; gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime+0.3); } else if(type==='sell') { osc.frequency.value = 440; gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime+0.4); } else if(type==='repair') { osc.frequency.value = 660; gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime+0.2); } osc.start(); osc.stop(ctx.currentTime+0.3); ctx.resume(); } catch(e){} }
+
+        updateStats() {
+            document.getElementById('stat-money').innerText = Math.floor(this.money).toLocaleString();
+            document.getElementById('stat-rep').innerText = this.rep;
+            document.getElementById('stat-inv').innerText = `${this.inventory.length} / ${this.maxInv}`;
+            document.getElementById('stat-stores').innerText = this.stores;
+            if(this.trendActive && Date.now()<this.trendEndTime){
+                let model = MODELS_DB.find(m=>m.id===this.trendModelId);
+                document.getElementById('trend-indicator').innerHTML = `${model?.name || '?'} +${Math.round((this.trendMultiplier-1)*100)}%`;
+            } else {
+                document.getElementById('trend-indicator').innerHTML = '—';
+                if(this.trendActive && Date.now()>=this.trendEndTime) this.trendActive=false;
+            }
+        }
+
+        updateLevel() {
+            let newLvl = this.getLevelFromRep(this.rep);
+            if (newLvl !== this.lvl) {
+                this.lvl = newLvl;
+                if (newLvl > this.lvl) this.addNews('info', `🏆 Повышение уровня: ${this.lvl}!`);
+                else this.addNews('info', `📉 Понижение уровня: ${this.lvl}...`);
+            }
+            this.lvl = newLvl;
+        }
+
+        checkAchievements() {
+            ACHIEVEMENTS.forEach(ach => {
+                if(!this.achievements.includes(ach.id)) {
+                    let completed=false;
+                    if(ach.type==='repairs' && this.stats.repairsCount>=ach.target) completed=true;
+                    if(ach.type==='totalEarned' && this.stats.totalSalesAmount>=ach.target) completed=true;
+                    if(ach.type==='employeesHired' && this.stats.employeesHiredCount>=ach.target) completed=true;
+                    if(ach.type==='trendSales' && this.stats.trendSalesCount>=ach.target) completed=true;
+                    if(ach.type==='rarePurchased' && this.stats.rarePurchased>=ach.target) completed=true;
+                    if(completed) {
+                        this.achievements.push(ach.id);
+                        this.money += ach.rewardMoney;
+                        this.rep += ach.rewardRep;
+                        this.addNews('achievement', `🏆 ДОСТИЖЕНИЕ: ${ach.name}! +${ach.rewardRep} реп, +${ach.rewardMoney}₽`);
+                        this.updateLevel();
+                        this.saveGame();
+                    }
+                }
+            });
+        }
+
+        initTrendCycle() {
+            setInterval(()=>{
+                let randomModel = MODELS_DB[Math.floor(Math.random()*MODELS_DB.length)];
+                this.trendModelId = randomModel.id;
+                this.trendMultiplier = 1.3 + Math.random()*0.2;
+                this.trendActive = true;
+                this.trendEndTime = Date.now() + 60000;
+                this.addNews('trend', `📈 ТРЕНД! ${randomModel.name} продаётся на +${Math.round((this.trendMultiplier-1)*100)}% дороже!`);
+                this.updateStats();
+            }, 120000);
+        }
+
+        getTrendBonus(modelId) {
+            if(this.trendActive && this.trendModelId===modelId && Date.now()<this.trendEndTime) return this.trendMultiplier;
+            return 1.0;
+        }
+
+        getCustomer(clientName) {
+            let c = this.customerBase.find(cust=>cust.name===clientName);
+            if(!c){
+                let age = Math.floor(Math.random()*40)+18;
+                let profession = CLIENT_PROFESSIONS[Math.floor(Math.random()*CLIENT_PROFESSIONS.length)];
+                c = { name:clientName, age, profession, loyalty:0, purchases:0, history:[] };
+                this.customerBase.push(c);
+            }
+            return c;
+        }
+
+        applyLoyaltyBonus(clientName, basePrice) {
+            let cust = this.getCustomer(clientName);
+            let bonus = 1 + (cust.loyalty * 0.02);
+            if(bonus>1.2) bonus=1.2;
+            return Math.floor(basePrice * bonus);
+        }
+
+        recordSale(clientName, amount, itemName) {
+            let cust = this.getCustomer(clientName);
+            cust.purchases++;
+            cust.loyalty = Math.min(10, cust.loyalty+1);
+            cust.history.push({ item: itemName, price: amount, date: Date.now() });
+            this.stats.totalSalesAmount += amount;
+            this.checkAchievements();
+            if(cust.loyalty > 7 && Math.random() < 0.1) {
+                this.rep += 10;
+                this.addNews('info', `✨ Сарафанное радио: клиент ${cust.name} привёл друга! +10 репутации`);
+                this.updateLevel();
+            }
+            this.saveGame();
+        }
+
+        checkRecommendations() {
+            if(Math.random()<0.005 && this.customerBase.length>2){
+                this.rep+=15;
+                this.addNews('info', `✨ Постоянный клиент порекомендовал вас! +15 репутации`);
+                this.updateLevel();
+                this.saveGame();
+            }
+        }
+
+        initCollectibleCycle() {
+            this.collectibleInterval = setInterval(()=>{
+                if(!this.collectibleAuction && this.unlockedMarkets.includes('auction') && Math.random()<0.3){
+                    let rareModels = MODELS_DB.filter(m=>m.tier>=3);
+                    let model = rareModels[Math.floor(Math.random()*rareModels.length)];
+                    let specialName = `${model.name} ${['Золотой экземпляр','Автограф Стива','Заводская плёнка','Лимитированная серия'][Math.floor(Math.random()*4)]}`;
+                    let baseValue = model.basePrice * (3 + Math.random()*2);
+                    this.collectibleAuction = { name: specialName, model: model, currentBid: Math.floor(baseValue*0.7), endTime: Date.now()+90000 };
+                    this.addNews('collectible', `🏺 КОЛЛЕКЦИОННЫЙ АУКЦИОН: ${specialName} старт ${this.collectibleAuction.currentBid.toLocaleString()}₽`);
+                }
+            }, 180000);
+        }
+
+        showCollectibleAuction() {
+            if(!this.collectibleAuction) { this.addNews('info', "Нет активного коллекционного аукциона"); return; }
+            let modal = document.getElementById('collectible-auction-modal');
+            let updateDisplay = () => {
+                if(this.collectibleAuction) document.getElementById('collectible-content').innerHTML = `<div><b>${this.collectibleAuction.name}</b><br>Текущая ставка: ${Math.floor(this.collectibleAuction.currentBid).toLocaleString()}₽<br>Окончание: ${Math.max(0,Math.floor((this.collectibleAuction.endTime-Date.now())/1000))} сек</div>`;
+                else modal.style.display='none';
+            };
+            updateDisplay();
+            modal.style.display='flex';
+            document.getElementById('bid-collectible').onclick = () => {
+                if(!this.collectibleAuction || Date.now()>=this.collectibleAuction.endTime){ this.addNews('info',"Аукцион завершён"); modal.style.display='none'; return; }
+                let newBid = this.collectibleAuction.currentBid+1000;
+                if(this.money>=newBid){
+                    this.money-=newBid;
+                    this.collectibleAuction.currentBid=newBid;
+                    this.addNews('info',`💰 Вы повысили ставку до ${newBid.toLocaleString()}₽`);
+                    this.saveGame();
+                    updateDisplay();
+                } else this.addNews('info',"Не хватает денег");
+            };
+            document.getElementById('close-collectible').onclick = ()=>modal.style.display='none';
+            let interval = setInterval(()=>{
+                if(this.collectibleAuction && Date.now()>=this.collectibleAuction.endTime) {
+                    if(this.collectibleAuction.currentBid>0 && this.inventory.length<this.maxInv){
+                        this.inventory.push({ id:Date.now(), model:this.collectibleAuction.model, defect:null, buyPrice:this.collectibleAuction.currentBid, imeiStatus:'clean', imeiChecked:true, status:'warehouse', isCollectible:true, specialName:this.collectibleAuction.name });
+                        this.addNews('collectible',`🏆 Вы выиграли коллекционный телефон ${this.collectibleAuction.name}!`);
+                        this.stats.rarePurchased++;
+                        this.checkAchievements();
+                    } else if(this.inventory.length>=this.maxInv) this.addNews('info',"Нет места на складе");
+                    this.collectibleAuction=null;
+                    modal.style.display='none';
+                    clearInterval(interval);
+                }
+            }, 1000);
+        }
+
+        getLevelFromRep(rep) { return Math.min(5, Math.floor(rep / 300) + 1); }
+        getValidDefect(model) {
+            for(let i=0;i<20;i++){
+                let defect=DEFECTS[Math.floor(Math.random()*DEFECTS.length)];
+                if(defect.allowedBrands==='all') return defect;
+                if(Array.isArray(defect.allowedBrands) && defect.allowedBrands.includes(model.brand)) return defect;
+            }
+            return null;
+        }
+
+        calculatePrice(basePrice,defect,marketType,fluctuation){
+            let price=basePrice;
+            if(defect) price*=(1-defect.costMult);
+            let multiplier=1.0;
+            switch(marketType){
+                case 'official':multiplier=1.2+Math.random()*0.3; break;
+                case 'refurb':multiplier=0.9+Math.random()*0.2; break;
+                case 'budget':multiplier=0.7+Math.random()*0.25; break;
+                case 'vip':multiplier=1.1+Math.random()*0.2; break;
+                case 'blackmarket':multiplier=0.5+Math.random()*0.2; break;
+                case 'ozon':multiplier=0.8+Math.random()*0.1; break;
+                case 'aliexpress':multiplier=0.65+Math.random()*0.2; break;
+            }
+            if(this.crazyMode) multiplier*=(0.5+Math.random()*2.5);
+            if(fluctuation) multiplier*=0.95+Math.random()*0.1;
+            price*=multiplier;
+            return Math.max(300, Math.floor(price));
+        }
+
+        generateMarket(type) {
+            let count=5;
+            let market=[];
+            for(let i=0;i<count;i++){
+                let model=MODELS_DB[Math.floor(Math.random()*MODELS_DB.length)];
+                let defect=null;
+                if(type!=='ozon'){
+                    if(Math.random()<0.55) defect=this.getValidDefect(model);
+                }
+                let buyPrice=this.calculatePrice(model.basePrice,defect,type,true);
+                let imeiChecked=false, imeiStatus=null;
+                if(['official','refurb','vip','ozon','aliexpress'].includes(type)){
+                    imeiChecked=true; imeiStatus='clean';
+                } else if(type==='blackmarket'){
+                    imeiChecked=true; imeiStatus='stolen';
+                } else if(type==='budget') imeiChecked=false;
+                let isBrick=(type==='budget'&&Math.random()<0.2)||(type==='blackmarket'&&Math.random()<0.3);
+                market.push({ id:Date.now()+i+Math.random()*1000, model, defect, buyPrice, isBrick, imeiChecked, imeiStatus, seller:SELLERS[type][Math.floor(Math.random()*SELLERS[type].length)] });
+            }
+            this.markets[type]=market;
+        }
+
+        generateAllMarkets() {
+            for(let type of ['budget','official','refurb','blackmarket','vip','ozon','aliexpress']) {
+                if(this.unlockedMarkets.includes(type)) this.generateMarket(type);
+                else this.markets[type]=[];
+            }
+        }
+
+        refreshMarket(type) {
+            if(!this.unlockedMarkets.includes(type)) return this.addNews('info',"Рынок не установлен!");
+            let cost = { official:600, refurb:500, budget:400, vip:1000, blackmarket:800, ozon:500, aliexpress:400 }[type];
+            if(this.money<cost) return this.addNews('info',`Не хватает ${cost}₽`);
+            this.money-=cost;
+            this.generateMarket(type);
+            this.addNews('info',`${type} обновлён`);
+            this.render();
+            this.saveGame();
+        }
+
+        checkIMEI(deviceId) {
+            let dev = this.markets.budget.find(d=>d.id===deviceId);
+            if(!dev) return;
+            if(this.money<500) return this.addNews('info',"Не хватает 500₽");
+            this.money-=500;
+            dev.imeiStatus = Math.random()<0.2 ? 'stolen' : 'clean';
+            dev.imeiChecked=true;
+            this.addNews(dev.imeiStatus==='stolen'?'police':'info', `🔍 IMEI ${dev.model.name}: ${dev.imeiStatus==='stolen' ? 'КРАДЕНЫЙ' : 'ЧИСТЫЙ'}`);
+            this.render();
+            this.saveGame();
+        }
+
+        buyDevice(id,type) {
+            if(!this.unlockedMarkets.includes(type)) return this.addNews('info',"Рынок не установлен!");
+            if(type==='ozon'||type==='aliexpress') return this.buyDeliveryItem(id,type);
+            let item = this.markets[type].find(x=>x.id===id);
+            if(!item) return;
+            if(this.money<item.buyPrice) return this.addNews('info',"Не хватает денег");
+            if(this.inventory.length>=this.maxInv) return this.addNews('info',"Склад полон");
+            this.money-=item.buyPrice;
+            this.inventory.push({ id:Date.now()+Math.random(), model:item.model, defect:item.defect, buyPrice:item.buyPrice, isBrick:item.isBrick, imeiStatus:item.imeiStatus, imeiChecked:true, status:'warehouse', repairProgress:0, currentPartQuality:null, sellPrice:null });
+            this.markets[type] = this.markets[type].filter(x=>x.id!==id);
+            this.addNews('info', `📱 Куплен ${item.model.name} за ${item.buyPrice.toLocaleString()}₽`);
+            this.playSound('buy');
+            this.render();
+            this.saveGame();
+        }
+
+        buyDeliveryItem(itemId,type) {
+            let item = this.markets[type].find(x=>x.id===itemId);
+            if(!item) return;
+            if(this.money<item.buyPrice) return this.addNews('info',"Не хватает денег");
+            if(this.deliveries.length+this.inventory.length>=this.maxInv+3) return this.addNews('info',"Слишком много заказов");
+            this.money-=item.buyPrice;
+            let deliveryTime=30+Math.random()*30;
+            let delivery={ id:this.deliveryIdCounter++, item:{ ...item, buyPrice:item.buyPrice }, status:'в пути', timeLeft:deliveryTime, totalTime:deliveryTime, insurance:false };
+            this.deliveries.push(delivery);
+            this.markets[type]=this.markets[type].filter(x=>x.id!==itemId);
+            this.addNews('info',`📦 Заказ: ${item.model.name} доставка через ${Math.floor(deliveryTime)} сек.`);
+            this.render();
+            this.saveGame();
+        }
+
+        insureDelivery(deliveryId) {
+            let delivery=this.deliveries.find(d=>d.id===deliveryId);
+            if(!delivery||delivery.insurance) return;
+            let cost=Math.floor(delivery.item.buyPrice*0.05);
+            if(this.money<cost){ this.addNews('info',`Не хватает ${cost}₽ для страховки`); return; }
+            this.money-=cost;
+            delivery.insurance=true;
+            this.addNews('info',`🛡️ Посылка застрахована!`);
+            this.render();
+            this.saveGame();
+        }
+
+        processDeliveries() {
+            for(let i=0;i<this.deliveries.length;i++){
+                let d=this.deliveries[i];
+                d.timeLeft--;
+                if(d.timeLeft<=0){
+                    if(Math.random()<0.05 && !d.insurance){
+                        this.addNews('police',`🚨 ПОСЫЛКА УКРАДЕНА! ${d.item.model.name}`);
+                        this.deliveries.splice(i,1); i--; continue;
+                    }
+                    if(Math.random()<0.1){
+                        d.timeLeft=15;
+                        this.addNews('info',`⏰ Задержка доставки ${d.item.model.name}.`);
+                        continue;
+                    }
+                    if(this.inventory.length>=this.maxInv){
+                        this.addNews('info',`⚠️ Нет места на складе для ${d.item.model.name}!`);
+                        this.deliveries.splice(i,1); i--; continue;
+                    }
+                    this.inventory.push({ id:Date.now()+Math.random(), model:d.item.model, defect:d.item.defect, buyPrice:d.item.buyPrice, isBrick:d.item.isBrick, imeiStatus:d.item.imeiStatus, imeiChecked:true, status:'warehouse', repairProgress:0, currentPartQuality:null, sellPrice:null });
+                    this.addNews('info',`✅ Посылка доставлена: ${d.item.model.name}`);
+                    this.deliveries.splice(i,1); i--;
+                }
+            }
+        }
+
+        getSuggestedPrice(dev) {
+            let base=dev.model.basePrice;
+            if(dev.defect) base*=(1-dev.defect.costMult);
+            if(dev.currentPartQuality) base*=(0.7+dev.currentPartQuality*0.3);
+            else if(!dev.defect) base*=1.0;
+            else base*=0.8;
+            let repBonus=1+Math.min(0.5,this.rep/2000);
+            let tradingBonus=1+this.skills.trading*0.05;
+            return Math.max(100,Math.floor(base*(0.85+Math.random()*0.15)*repBonus*tradingBonus*this.getTrendBonus(dev.model.id)));
+        }
+
+        putOnShop(id,priceVal){
+            let dev=this.inventory.find(d=>d.id===id);
+            if(!dev||dev.status==='dead') return;
+            let price=parseInt(priceVal);
+            if(isNaN(price)||price<100) price=this.getSuggestedPrice(dev);
+            dev.status='shop';
+            dev.sellPrice=price;
+            if(!this.shopOrder.includes(dev.id)) this.shopOrder.push(dev.id);
+            this.addNews('info',`🏷️ ${dev.model.name} выставлен за ${price.toLocaleString()}₽`);
+            this.render();
+            this.saveGame();
+        }
+
+        cancelSale(id){
+            let dev=this.inventory.find(d=>d.id===id);
+            if(dev){
+                dev.status='warehouse';
+                this.shopOrder=this.shopOrder.filter(i=>i!==id);
+                this.addNews('info',`${dev.model.name} снят`);
+                this.render();
+                this.saveGame();
+            }
+        }
+
+        moveUpShop(id){
+            let idx=this.shopOrder.indexOf(id);
+            if(idx>0){
+                [this.shopOrder[idx-1],this.shopOrder[idx]]=[this.shopOrder[idx],this.shopOrder[idx-1]];
+                this.render();
+                this.saveGame();
+            }
+        }
+
+        moveDownShop(id){
+            let idx=this.shopOrder.indexOf(id);
+            if(idx!==-1 && idx<this.shopOrder.length-1){
+                [this.shopOrder[idx],this.shopOrder[idx+1]]=[this.shopOrder[idx+1],this.shopOrder[idx]];
+                this.render();
+                this.saveGame();
+            }
+        }
+
+        hideShopItem(id){
+            if(!this.hiddenShopItems.includes(id)) this.hiddenShopItems.push(id);
+            this.render();
+            this.saveGame();
+        }
+
+        processSales(){
+            let totalMarketing = this.storeUpgrades.reduce((sum, s) => sum + s.marketing, 0);
+            let baseRate=0.02+(this.stores*0.005) + totalMarketing*0.001;
+            let rate=this.crazyMode?baseRate*2:baseRate;
+            for(let i=0;i<this.inventory.length;i++){
+                let dev=this.inventory[i];
+                if(dev.status!=='shop') continue;
+                if(Math.random()>rate) continue;
+                let marketPrice=dev.model.basePrice;
+                let priceRatio=dev.sellPrice/marketPrice;
+                let buyChance=1/(1+Math.pow(priceRatio-1,2)*10);
+                if(Math.random()>buyChance){
+                    this.addNews('info',`💰 Клиент посмотрел ${dev.model.name}, но цена высока`);
+                    continue;
+                }
+                let cash=Math.floor(Math.random()*(dev.sellPrice*1.8))+300;
+                let clientType=this.clientTypes[Math.floor(Math.random()*this.clientTypes.length)];
+                let clientName = CLIENT_NAMES[Math.floor(Math.random()*CLIENT_NAMES.length)] + ' ' + Math.floor(Math.random()*100);
+                let finalPrice=dev.sellPrice;
+                if(clientType==='collector') finalPrice=Math.floor(dev.sellPrice*1.3);
+                else if(clientType==='reseller') finalPrice=Math.floor(dev.sellPrice*0.7);
+                else if(clientType==='student') finalPrice=Math.floor(dev.sellPrice*0.9);
+                finalPrice = this.applyLoyaltyBonus(clientName, finalPrice);
+                if(clientType!=='businessman' && Math.random()<0.5){
+                    let offered=Math.floor(finalPrice*(0.7+Math.random()*0.3));
+                    this.addNews('info',`🤝 Клиент (${clientType}) предлагает ${offered.toLocaleString()}₽`);
+                    this.startTrade(dev,offered,finalPrice,clientName);
+                    return;
+                } else {
+                    if(cash>=finalPrice){
+                        this.completeSale(dev,finalPrice,clientName);
+                        i--;
+                    } else this.addNews('info',`❌ Клиенту не хватило денег`);
+                }
+            }
+        }
+
+        startTrade(dev,offered,originalPrice,clientName){
+            let modal=document.getElementById('trade-modal');
+            let msg=document.getElementById('trade-message');
+            msg.innerText=`Клиент предлагает ${offered.toLocaleString()}₽ за ${dev.model.name}. Соглашаетесь?`;
+            modal.style.display='flex';
+            let accept=()=>{ modal.style.display='none'; this.completeSale(dev,offered,clientName); };
+            let decline=()=>{ modal.style.display='none'; this.addNews('info',`❌ Отказ`); };
+            document.getElementById('trade-accept').onclick=accept;
+            document.getElementById('trade-decline').onclick=decline;
+        }
+
+        completeSale(dev,price,clientName){
+            let profitBeforeTax=price-dev.buyPrice;
+            let tax=Math.floor(price*0.05);
+            let profit=profitBeforeTax-tax;
+            this.money+=price-tax;
+            if(profit>0){
+                let repGain=Math.max(2,Math.floor(profit/2500)+2);
+                this.rep+=repGain;
+                this.addNews('sale',`💸 ПРОДАНО ${dev.model.name} за ${price.toLocaleString()}₽ | +${repGain} реп`);
+            } else {
+                this.rep=Math.max(0,this.rep-4);
+                this.addNews('info',`⚠️ Убыток: ${-profit}₽, репутация -4`);
+            }
+            this.updateLevel();
+            this.inventory=this.inventory.filter(d=>d.id!==dev.id);
+            this.recordSale(clientName, price, dev.model.name);
+            if(this.trendActive && this.trendModelId===dev.model.id){
+                this.stats.trendSalesCount++;
+                this.checkAchievements();
+            }
+            this.playSound('sell');
+            this.render();
+            this.saveGame();
+        }
+
+        policeCheck(){
+            let totalSecurity = this.storeUpgrades.reduce((sum, s) => sum + s.security, 0);
+            let baseChance = 0.02 * Math.max(0.2, 1 - totalSecurity*0.1);
+            if(Math.random()>baseChance) return;
+            this.addNews('police',"🚔 Полицейский патруль...");
+            let stolen=this.inventory.filter(d=>d.imeiStatus==='stolen' && (d.status==='warehouse'||d.status==='shop'));
+            if(stolen.length===0) return;
+            let dev=stolen[Math.floor(Math.random()*stolen.length)];
+            let fine=Math.floor(dev.model.basePrice*0.6);
+            this.money-=fine;
+            this.rep=Math.max(0,this.rep-15);
+            this.addNews('police',`🚔 ПОЛИЦИЯ: изъят краденый ${dev.model.name}! Штраф ${fine.toLocaleString()}₽`);
+            this.updateLevel();
+            this.inventory=this.inventory.filter(d=>d.id!==dev.id);
+            this.render();
+            this.saveGame();
+        }
+
+        startAuction(){
+            if(this.auctionItem){ this.addNews('info',"Аукцион уже идёт!"); return; }
+            if(!this.unlockedMarkets.includes('auction')){ this.addNews('info',"Аукцион не установлен!"); return; }
+            let rareModels=MODELS_DB.filter(m=>m.tier>=3);
+            let model=rareModels[Math.floor(Math.random()*rareModels.length)];
+            let startPrice=model.basePrice*0.8;
+            this.auctionItem={ model, currentBid:startPrice, bidder:'бот' };
+            this.auctionEndTime=Date.now()+120000;
+            this.addNews('info',`🔨 Аукцион на ${model.name}! Старт ${startPrice.toLocaleString()}₽`);
+            this.simulateAuctionBots();
+            this.render();
+        }
+
+        simulateAuctionBots(){
+            this.auctionInterval=setInterval(()=>{
+                if(!this.auctionItem){ clearInterval(this.auctionInterval); return; }
+                if(Date.now()>=this.auctionEndTime){ clearInterval(this.auctionInterval); return; }
+                let inc=Math.floor(this.auctionItem.currentBid*0.05)+100;
+                this.auctionItem.currentBid+=inc;
+                this.auctionItem.bidder='бот';
+                this.addNews('info',`🤖 Бот поднял ставку до ${this.auctionItem.currentBid.toLocaleString()}₽`);
+                this.render();
+            },15000);
+        }
+
+        bidAuction(){
+            if(!this.auctionItem){ this.addNews('info',"Нет аукциона"); return; }
+            if(Date.now()>=this.auctionEndTime){ this.addNews('info',"Аукцион завершён"); return; }
+            let bid=this.auctionItem.currentBid+500;
+            if(this.money<bid){ this.addNews('info',"Не хватает денег"); return; }
+            this.money-=bid;
+            this.auctionItem.currentBid=bid;
+            this.auctionItem.bidder='игрок';
+            this.addNews('info',`💰 Вы сделали ставку ${bid.toLocaleString()}₽`);
+            this.saveGame();
+            this.render();
+        }
+
+        finishAuction(){
+            if(!this.auctionItem) return;
+            if(this.auctionItem.bidder==='игрок'){
+                if(this.inventory.length>=this.maxInv){
+                    this.addNews('info',`⚠️ Нет места на складе для ${this.auctionItem.model.name}!`);
+                } else {
+                    this.inventory.push({ id:Date.now()+Math.random(), model:this.auctionItem.model, defect:null, buyPrice:this.auctionItem.currentBid, imeiStatus:'clean', imeiChecked:true, status:'warehouse', repairProgress:0, currentPartQuality:null, sellPrice:null });
+                    this.addNews('info',`🏆 Вы выиграли аукцион! ${this.auctionItem.model.name} добавлен.`);
+                }
+            } else this.addNews('info',`😞 Аукцион выиграл бот.`);
+            this.auctionItem=null;
+            this.render();
+            this.saveGame();
+        }
+
+        buyPart(pid){
+            let part=PARTS_CATALOG.find(p=>p.id===pid);
+            if(this.money<part.basePrice) return this.addNews('info',"Не хватает");
+            this.money-=part.basePrice;
+            this.parts.push({ ...part, uid:Date.now()+Math.random() });
+            this.addNews('info',`🔧 Куплена ${part.name}`);
+            this.render();
+            this.saveGame();
+        }
+
+        getServiceFee(device){
+            let base=device.model.basePrice;
+            if(device.defect) base*=(1-device.defect.costMult);
+            return Math.max(500,Math.floor(base*0.1));
+        }
+
+        startRepair(devId,partUid,express=false){
+            let dev=this.inventory.find(d=>d.id===devId);
+            let part=this.parts.find(p=>p.uid===partUid);
+            if(!dev||!part) return;
+            if(dev.isBrick){
+                dev.status='dead';
+                this.parts=this.parts.filter(p=>p.uid!==partUid);
+                this.addNews('info',`💀 ${dev.model.name} кирпич!`);
+                this.render();
+                this.saveGame();
+                return;
+            }
+            let fee=this.getServiceFee(dev);
+            if(express) fee*=2;
+            if(this.money<fee){ this.addNews('info',`Не хватает ${fee}₽`); return; }
+            this.money-=fee;
+            if(express){
+                let success=Math.random()<0.9;
+                if(success){
+                    dev.defect=null;
+                    dev.currentPartQuality=part.quality;
+                    this.rep+=6;
+                    this.stats.repairsCount++;
+                    this.checkAchievements();
+                    this.addNews('repair',`⚡ Экспресс-ремонт успешен! +6 реп`);
+                } else {
+                    this.addNews('repair',`❌ Экспресс-ремонт провален!`);
+                }
+                this.parts=this.parts.filter(p=>p.uid!==partUid);
+                this.updateLevel();
+                this.playSound('repair');
+                this.render();
+                this.saveGame();
+                return;
+            }
+            this.pendingRepair={ device:dev, part:part };
+            this.showMiniGame();
+        }
+
+        showMiniGame(){
+            let modal=document.getElementById('mini-game-modal');
+            modal.style.display='flex';
+            setTimeout(()=>this.initMiniGame(),50);
+        }
+
+        initMiniGame(){
+            let bar=document.getElementById('target-bar');
+            let slider=document.getElementById('slider');
+            let targetZone=document.getElementById('target-zone');
+            let barWidth=bar.offsetWidth;
+            if(barWidth===0){ setTimeout(()=>this.initMiniGame(),50); return; }
+            let zoneWidth=80+this.skills.repairSpeed*10;
+            zoneWidth=Math.min(zoneWidth,barWidth-10);
+            let zoneLeft=Math.random()*(barWidth-zoneWidth);
+            targetZone.style.left=zoneLeft+'px';
+            targetZone.style.width=zoneWidth+'px';
+            targetZone.style.display='block';
+            let sliderPos=0, direction=1;
+            let interval=setInterval(()=>{
+                sliderPos+=direction*8;
+                if(sliderPos+60>=barWidth){ sliderPos=barWidth-60; direction=-1; }
+                if(sliderPos<=0){ sliderPos=0; direction=1; }
+                slider.style.left=sliderPos+'px';
+            },20);
+            let stopBtn=document.getElementById('stop-repair');
+            let newStop=stopBtn.cloneNode(true);
+            stopBtn.parentNode.replaceChild(newStop,stopBtn);
+            newStop.onclick=()=>{
+                clearInterval(interval);
+                let hit=(sliderPos+30>=zoneLeft && sliderPos<=zoneLeft+zoneWidth);
+                if(hit) this.completeRepair(true);
+                else this.completeRepair(false);
+                document.getElementById('mini-game-modal').style.display='none';
+            };
+        }
+
+        completeRepair(success){
+            let {device,part}=this.pendingRepair;
+            if(success){
+                device.defect=null;
+                device.currentPartQuality=part.quality;
+                this.rep+=6;
+                this.stats.repairsCount++;
+                this.checkAchievements();
+                this.addNews('repair',`🔨 Ремонт успешен! +6 реп`);
+            } else {
+                this.addNews('repair',`❌ Ремонт провален! Деталь потеряна.`);
+            }
+            this.parts=this.parts.filter(p=>p.uid!==part.uid);
+            this.updateLevel();
+            this.playSound('repair');
+            this.render();
+            this.saveGame();
+            this.pendingRepair=null;
+        }
+
+        disposeDevice(devId){
+            let dev=this.inventory.find(d=>d.id===devId);
+            if(!dev||dev.status!=='dead') return;
+            let scrapValue=Math.floor(dev.buyPrice*0.1);
+            this.money+=scrapValue;
+            this.addNews('info',`🗑️ Утилизирован кирпич ${dev.model.name} за ${scrapValue.toLocaleString()}₽`);
+            this.inventory=this.inventory.filter(d=>d.id!==devId);
+            this.render();
+            this.saveGame();
+        }
+
+        takeLoan(amount,interest,days){
+            this.money+=amount;
+            this.loans.push({ amount, interest, remainingDays:days, totalToPay:amount*(1+interest/100) });
+            this.addNews('info',`💰 Кредит ${amount}₽`);
+            this.render();
+        }
+
+        repayLoan(idx){
+            let loan=this.loans[idx];
+            if(this.money>=loan.totalToPay){
+                this.money-=loan.totalToPay;
+                this.loans.splice(idx,1);
+                this.addNews('info',"Кредит погашен");
+            } else this.addNews('info',"Не хватает денег");
+            this.render();
+        }
+
+        buyFakeReviews(){
+            if(this.money<5000) return this.addNews('info',"Не хватает");
+            this.money-=5000;
+            if(Math.random()<0.3){
+                this.rep-=30;
+                this.addNews('info',"Отзывы раскрыты! -30 реп");
+            } else {
+                this.rep+=25;
+                this.addNews('info',"+25 реп");
+            }
+            this.updateLevel();
+            this.saveGame();
+        }
+
+        toggleCrazyMode(){
+            if(!this.crazyModeUnlocked){
+                if(this.rep>=500){
+                    this.rep-=500;
+                    this.crazyModeUnlocked=true;
+                    this.crazyMode=true;
+                    this.addNews('info',"Режим безумия куплен!");
+                } else this.addNews('info',"Нужно 500 реп");
+            } else {
+                this.crazyMode=!this.crazyMode;
+                this.addNews('info',this.crazyMode?"Безумие включено":"Безумие выключено");
+            }
+            this.updateLevel();
+            this.saveGame();
+        }
+
+        upgradeSkill(skill){
+            let cost=skill==='repairSpeed'?450:750;
+            if(this.rep>=cost){
+                this.rep-=cost;
+                this.skills[skill]++;
+                this.addNews('info',`Навык ${skill} до ${this.skills[skill]}`);
+                this.updateLevel();
+                this.render();
+                this.saveGame();
+            } else this.addNews('info',"Не хватает реп");
+        }
+
+        setTheme(theme){
+            this.currentTheme=theme;
+            document.body.className=theme;
+            this.addNews('info',`Тема ${theme}`);
+            this.saveGame();
+        }
+
+        applyTheme(){ document.body.className=this.currentTheme; }
+
+        installApp(appId){
+            let app=APPS_LIST.find(a=>a.id===appId);
+            if(!app) return;
+            if(this.lvl<app.requiredLevel){ this.addNews('info',`Нужен ${app.requiredLevel} уровень (у вас ${this.lvl})`); return; }
+            if(this.rep<app.price){ this.addNews('info',`Нужно ${app.price} реп`); return; }
+            this.rep-=app.price;
+            if(!this.unlockedMarkets.includes(appId)){
+                this.unlockedMarkets.push(appId);
+                this.generateMarket(appId);
+                this.addNews('info',`✅ ${app.name} установлен!`);
+                this.updateLevel();
+                this.render();
+                this.saveGame();
+            }
+        }
+
+        openNewStore(){
+            if(this.money<this.storeUpgradeCost){ this.addNews('info',`Не хватает ${this.storeUpgradeCost}₽`); return; }
+            this.money-=this.storeUpgradeCost;
+            this.stores++;
+            this.storeUpgrades.push({ interior:0, security:0, marketing:0 });
+            this.storeUpgradeCost=Math.floor(this.storeUpgradeCost*1.5);
+            this.addNews('info',`🏪 Открыт ${this.stores}-й магазин!`);
+            this.render();
+            this.saveGame();
+        }
+
+        upgradeStore(index, type) {
+            if(index >= this.stores) return;
+            let store = this.storeUpgrades[index];
+            let baseCost = 5000;
+            let cost = baseCost * (store[type] + 1);
+            if(this.money < cost) { this.addNews('info', `Не хватает ${cost}₽`); return; }
+            this.money -= cost;
+            store[type]++;
+            this.addNews('info', `🏢 Магазин ${index+1}: улучшен ${type==='interior'?'дизайн':type==='security'?'безопасность':'маркетинг'} до уровня ${store[type]}`);
+            this.render();
+            this.saveGame();
+        }
+
+        hireEmployee(type){
+            if(this.employees[type]){ this.addNews('info',"Сотрудник уже нанят!"); return; }
+            let cost=type==='seller'?10000:type==='repairer'?15000:20000;
+            if(this.money<cost){ this.addNews('info',`Не хватает ${cost}₽`); return; }
+            this.money-=cost;
+            this.employees[type]={ level:1, salary:Math.floor(cost/10) };
+            this.stats.employeesHiredCount++;
+            this.checkAchievements();
+            this.addNews('info',`✅ Нанят ${type==='seller'?'продавец':type==='repairer'?'мастер':'менеджер'}!`);
+            this.render();
+            this.saveGame();
+        }
+
+        upgradeEmployee(type){
+            let emp=this.employees[type];
+            if(!emp) return;
+            let cost=emp.level*5000;
+            if(this.money<cost){ this.addNews('info',`Не хватает ${cost}₽`); return; }
+            this.money-=cost;
+            emp.level++;
+            emp.salary=Math.floor(emp.salary*1.2);
+            this.addNews('info',`📚 ${type==='seller'?'Продавец':type==='repairer'?'Мастер':'Менеджер'} повышен до ${emp.level} уровня!`);
+            this.render();
+            this.saveGame();
+        }
+
+        processEmployees(){
+            let managerBonus=this.employees.manager?1+this.employees.manager.level*0.05:1;
+            if(this.employees.seller && this.inventory.some(d=>d.status==='shop')){
+                let chance=0.05*this.employees.seller.level*managerBonus;
+                if(Math.random()<chance){
+                    let shopItem=this.inventory.find(d=>d.status==='shop');
+                    if(shopItem){
+                        let price=shopItem.sellPrice;
+                        let tax=Math.floor(price*0.05);
+                        let commission=Math.floor(price*0.1);
+                        this.money+=price-tax-commission;
+                        this.addNews('sale',`🤖 Продавец продал ${shopItem.model.name} за ${price}₽`);
+                        this.inventory=this.inventory.filter(d=>d.id!==shopItem.id);
+                        this.updateLevel();
+                        this.render();
+                        this.saveGame();
+                    }
+                }
+            }
+            if(this.employees.repairer && this.inventory.some(d=>d.defect && d.status==='warehouse' && !d.isBrick)){
+                let chance=0.03*this.employees.repairer.level*managerBonus;
+                if(Math.random()<chance){
+                    let broken=this.inventory.find(d=>d.defect && d.status==='warehouse' && !d.isBrick);
+                    if(broken){
+                        let fee=this.getServiceFee(broken);
+                        if(this.money>=fee){
+                            this.money-=fee;
+                            let success=Math.random()<(0.7+this.employees.repairer.level*0.05+(this.employees.manager?this.employees.manager.level*0.02:0));
+                            if(success){
+                                broken.defect=null;
+                                broken.currentPartQuality=0.9;
+                                this.rep+=4;
+                                this.addNews('repair',`🔧 Мастер отремонтировал ${broken.model.name}! +4 реп`);
+                            } else {
+                                this.addNews('repair',`❌ Мастер испортил ${broken.model.name}!`);
+                            }
+                            this.updateLevel();
+                            this.render();
+                            this.saveGame();
+                        }
+                    }
+                }
+            }
+        }
+
+        paySalaries(){
+            let totalSalary=0;
+            if(this.employees.seller) totalSalary+=this.employees.seller.salary;
+            if(this.employees.repairer) totalSalary+=this.employees.repairer.salary;
+            if(this.employees.manager) totalSalary+=this.employees.manager.salary;
+            if(totalSalary>0){
+                if(this.money>=totalSalary){
+                    this.money-=totalSalary;
+                    this.addNews('info',`💼 Выплачена зарплата сотрудникам: -${totalSalary.toLocaleString()}₽`);
+                } else {
+                    this.addNews('info',`⚠️ Не хватает денег на зарплату! Сотрудники уволены.`);
+                    this.employees={ seller:null, repairer:null, manager:null };
+                }
+                this.saveGame();
+            }
+        }
+
+        generateOrder(){
+            let models=MODELS_DB.filter(m=>m.tier>=2);
+            let model=models[Math.floor(Math.random()*models.length)];
+            let quantity=Math.floor(Math.random()*5)+1;
+            let pricePerUnit=model.basePrice*0.9;
+            let deadline=60+Math.random()*120;
+            this.activeOrders.push({ id:Date.now(), model, quantity, pricePerUnit, deadline:Date.now()+deadline*1000 });
+            this.addNews('info',`📦 Новый заказ: ${quantity} шт. ${model.name} за ${pricePerUnit}₽/шт.`);
+            this.render();
+        }
+
+        processOrdersTimeout(){
+            let removed=false;
+            this.activeOrders=this.activeOrders.filter(order=>{
+                if(Date.now()>=order.deadline){
+                    this.addNews('info',`⏰ Заказ на ${order.quantity} шт. ${order.model.name} просрочен.`);
+                    removed=true;
+                    return false;
+                }
+                return true;
+            });
+            if(removed) this.render();
+        }
+
+        completeOrder(orderId){
+            let order=this.activeOrders.find(o=>o.id===orderId);
+            if(!order) return;
+            let available=this.inventory.filter(d=>d.model.id===order.model.id && d.status==='warehouse').length;
+            if(available>=order.quantity){
+                let taken=0;
+                for(let i=0;i<this.inventory.length && taken<order.quantity;i++){
+                    if(this.inventory[i].model.id===order.model.id && this.inventory[i].status==='warehouse'){
+                        this.inventory.splice(i,1);
+                        taken++;
+                        i--;
+                    }
+                }
+                let total=order.quantity*order.pricePerUnit;
+                this.money+=total;
+                this.addNews('sale',`✅ Заказ выполнен! +${total.toLocaleString()}₽`);
+                this.activeOrders=this.activeOrders.filter(o=>o.id!==orderId);
+            } else {
+                this.addNews('info',`❌ Не хватает устройств. Нужно ${order.quantity} шт.`);
+            }
+            this.render();
+            this.saveGame();
+        }
+
+        updateLotteryCooldown(){ if(this.lotteryCooldown>0) this.lotteryCooldown--; }
+
+        buyLotteryTicket(){
+            if(this.lotteryCooldown>0){ this.addNews('info',`Лотерея через ${Math.ceil(this.lotteryCooldown/3600)} ч.`); return; }
+            if(this.money<1000){ this.addNews('info',"Не хватает 1000₽"); return; }
+            this.money-=1000;
+            this.lotteryCooldown=86400;
+            let prize=Math.random()<0.3?50000:10000;
+            this.money+=prize;
+            this.addNews('info',`🎉 ЛОТЕРЕЯ: выиграли ${prize}₽!`);
+            this.saveGame();
+        }
+
+        initBusinessPlan() {
+            if(!this.businessPlan || this.businessPlan.length===0) this.generateBusinessGoal();
+        }
+
+        generateBusinessGoal() {
+            let types = ['earnMoney', 'sellPhones'];
+            let type = types[Math.floor(Math.random()*types.length)];
+            let goal;
+            if(type==='earnMoney') {
+                let target = 200000 + Math.floor(Math.random()*300000);
+                goal = { id: Date.now(), type, description: `Заработать ${target.toLocaleString()}₽`, target, progress: 0, deadline: Date.now()+180000, rewardMoney: 20000, rewardRep: 50, completed: false };
+            } else {
+                let target = 10 + Math.floor(Math.random()*20);
+                goal = { id: Date.now(), type, description: `Продать ${target} телефонов`, target, progress: 0, deadline: Date.now()+300000, rewardMoney: 15000, rewardRep: 40, completed: false };
+            }
+            this.businessPlan.push(goal);
+        }
+
+        checkBusinessPlan() {
+            for(let goal of this.businessPlan) {
+                if(goal.completed) continue;
+                if(goal.type==='earnMoney') {
+                    goal.progress = this.stats.totalSalesAmount;
+                } else if(goal.type==='sellPhones') {
+                    goal.progress = this.stats.trendSalesCount + this.stats.repairsCount;
+                }
+                if(goal.progress >= goal.target && Date.now() <= goal.deadline) {
+                    goal.completed = true;
+                    this.money += goal.rewardMoney;
+                    this.rep += goal.rewardRep;
+                    this.addNews('achievement', `🎯 Бизнес-план выполнен: ${goal.description}! +${goal.rewardMoney}₽, +${goal.rewardRep} реп`);
+                    this.updateLevel();
+                    this.generateBusinessGoal();
+                } else if(Date.now() > goal.deadline && !goal.completed) {
+                    goal.completed = true;
+                    this.addNews('info', `⏰ Бизнес-план провален: ${goal.description}`);
+                    this.generateBusinessGoal();
+                }
+            }
+            this.businessPlan = this.businessPlan.filter(g => !g.completed || Date.now() - g.deadline < 60000);
+        }
+
+        updateRecoinRate() {
+            let change = (Math.random() - 0.5) * 20;
+            this.recoinRate = Math.max(10, this.recoinRate + change);
+            this.recoinRateHistory.push(this.recoinRate);
+            if(this.recoinRateHistory.length > 60) this.recoinRateHistory.shift();
+        }
+
+        buyRecoin(amount) {
+            let cost = amount * this.recoinRate * 1.01;
+            if(this.money < cost) return this.addNews('info', 'Не хватает денег');
+            this.money -= cost;
+            this.recoinBalance += amount;
+            this.addNews('info', `₿ Куплено ${amount} ReCoin за ${Math.floor(cost).toLocaleString()}₽`);
+            this.saveGame();
+        }
+
+        sellRecoin(amount) {
+            if(this.recoinBalance < amount) return this.addNews('info', 'Недостаточно ReCoin');
+            let revenue = amount * this.recoinRate * 0.99;
+            this.money += revenue;
+            this.recoinBalance -= amount;
+            this.addNews('info', `₿ Продано ${amount} ReCoin за ${Math.floor(revenue).toLocaleString()}₽`);
+            this.saveGame();
+        }
+
+        renderNav() {
+            const aside = document.getElementById('nav-aside');
+            aside.innerHTML = '';
+            const mainSections = [
+                { tab: 'main', name: 'ГЛАВНАЯ' },
+                { tab: 'appstore', name: '📱 МАГАЗИН ПРИЛОЖЕНИЙ' },
+                { tab: 'parts', name: '🔧 ЗАПЧАСТИ' },
+                { tab: 'warehouse', name: '📦 СКЛАД' },
+                { tab: 'service', name: '🛠️ СЕРВИС' },
+                { tab: 'shop', name: '🏪 ВИТРИНА' },
+                { tab: 'clients', name: '👥 КЛИЕНТЫ' },
+                { tab: 'business', name: '📊 БИЗНЕС-ПЛАН' },
+                { tab: 'recoin', name: '₿ ReCoin' },
+                { tab: 'extra', name: '🎲 ДОПОЛНИТЕЛЬНО' },
+                { tab: 'skills', name: '🎓 НАВЫКИ' },
+                { tab: 'franchise', name: '🏢 ФРАНШИЗА' },
+                { tab: 'employees', name: '👥 СОТРУДНИКИ' },
+                { tab: 'orders', name: '📋 ЗАКАЗЫ' },
+                { tab: 'saves', name: '💾 СОХРАНЕНИЯ' },
+                { tab: 'about', name: 'ℹ️ О ПРОЕКТЕ' }
+            ];
+            mainSections.forEach(s => {
+                const btn = document.createElement('div');
+                btn.className = `nav-item ${this.currentTab === s.tab ? 'active' : ''}`;
+                btn.dataset.tab = s.tab;
+                btn.innerHTML = s.name;
+                btn.onclick = () => {
+                    this.currentTab = s.tab;
+                    this.render();
+                };
+                aside.appendChild(btn);
+                if (s.tab === 'appstore') {
+                    const subDiv = document.createElement('div');
+                    subDiv.className = 'nav-sub';
+                    APPS_LIST.forEach(app => {
+                        const subBtn = document.createElement('div');
+                        subBtn.className = `nav-item ${this.unlockedMarkets.includes(app.id) && this.currentTab === app.id ? 'active' : ''}`;
+                        subBtn.innerHTML = app.name;
+                        subBtn.onclick = (e) => {
+                            e.stopPropagation();
+                            if (this.unlockedMarkets.includes(app.id)) {
+                                this.currentTab = app.id;
+                                this.render();
+                            } else {
+                                this.addNews('info', `Приложение "${app.name}" не установлено`);
+                            }
+                        };
+                        subDiv.appendChild(subBtn);
+                    });
+                    aside.appendChild(subDiv);
+                }
+            });
+        }
+
+        render() {
+            const content = document.getElementById('content');
+            if (!content) return;
+            content.innerHTML = '';
+            if (this.currentTab === 'main') this.renderMain();
+            else if (this.currentTab === 'appstore') this.renderAppStore();
+            else if (this.currentTab === 'parts') this.renderParts();
+            else if (this.currentTab === 'warehouse') this.renderWarehouse();
+            else if (this.currentTab === 'service') this.renderService();
+            else if (this.currentTab === 'shop') this.renderShop();
+            else if (this.currentTab === 'clients') this.renderClients();
+            else if (this.currentTab === 'business') this.renderBusinessPlan();
+            else if (this.currentTab === 'recoin') this.renderRecoin();
+            else if (this.currentTab === 'extra') this.renderExtra();
+            else if (this.currentTab === 'skills') this.renderSkills();
+            else if (this.currentTab === 'franchise') this.renderFranchise();
+            else if (this.currentTab === 'employees') this.renderEmployees();
+            else if (this.currentTab === 'orders') this.renderOrders();
+            else if (this.currentTab === 'saves') this.renderSaves();
+            else if (this.currentTab === 'about') this.renderAbout();
+            else if (['budget','official','refurb','vip','blackmarket','ozon','aliexpress','auction'].includes(this.currentTab)) this.renderMarket(this.currentTab, this.currentTab.toUpperCase());
+        }
+
+        renderMain() {
+            let moneyCanvas = `<canvas id="moneyChart" width="300" height="120"></canvas>`;
+            document.getElementById('content').innerHTML = `
+            <div class="grid">
+                <div class="card"><h3>💰 Баланс: ${this.money.toLocaleString()}₽</h3>${moneyCanvas}</div>
+                <div class="card"><h3>⭐ Репутация: ${this.rep}</h3></div>
+                <div class="card"><h3>📦 Склад: ${this.inventory.length} / ${this.maxInv}</h3></div>
+                <div class="card"><h3>🏪 Магазинов: ${this.stores}</h3></div>
+                <div class="card"><h3>🚚 Доставок: ${this.deliveries.length}</h3></div>
+                <div class="card"><h3>🎲 Лотерея</h3><button class="btn" onclick="game.buyLotteryTicket()">Купить билет (1000₽)</button></div>
+                <div class="card"><h3>🏺 Коллекционный аукцион</h3><button class="btn" onclick="game.showCollectibleAuction()">Посмотреть</button></div>
+                <div class="card"><h3>🏆 Достижения (${this.achievements.length}/${ACHIEVEMENTS.length})</h3><ul>${ACHIEVEMENTS.map(a=>`<li>${a.name} ${this.achievements.includes(a.id)?'✅':''}</li>`).join('')}</ul></div>
+            </div>`;
+            setTimeout(() => this.drawMoneyChart(), 10);
+        }
+
+        drawMoneyChart() {
+            const canvas = document.getElementById('moneyChart');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width, h = canvas.height;
+            ctx.clearRect(0,0,w,h);
+            if(this.historyMoney.length < 2) return;
+            let min = Math.min(...this.historyMoney);
+            let max = Math.max(...this.historyMoney);
+            if(max===min) max = min+1;
+            ctx.strokeStyle = '#39ff14';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for(let i=0; i<this.historyMoney.length; i++) {
+                let x = (i/(this.historyMoney.length-1)) * w;
+                let y = h - ((this.historyMoney[i]-min)/(max-min)) * (h-10) - 5;
+                if(i===0) ctx.moveTo(x,y);
+                else ctx.lineTo(x,y);
+            }
+            ctx.stroke();
+        }
+
+        renderAppStore() {
+            let html='<div class="grid">';
+            APPS_LIST.forEach(app=>{
+                let installed=this.unlockedMarkets.includes(app.id);
+                html+=`<div class="card"><h3>${app.name}</h3><p>Уровень ${app.requiredLevel}, цена ${app.price} реп</p><button class="btn" onclick="game.installApp('${app.id}')">${installed?'Уже установлено':'Установить'}</button></div>`;
+            });
+            html+='</div>';
+            document.getElementById('content').innerHTML=html;
+        }
+
+        renderMarket(type,title) {
+            if(!this.unlockedMarkets.includes(type) && type!=='auction'){
+                document.getElementById('content').innerHTML=`<div class="card"><h3>🔒 ${title} НЕ УСТАНОВЛЕН</h3></div>`;
+                return;
+            }
+            if(type==='auction'){
+                document.getElementById('content').innerHTML=`<div class="card"><h3>🔨 Аукцион</h3>${this.auctionItem?`<p>Лот: ${this.auctionItem.model.name}<br>Ставка: ${this.auctionItem.currentBid.toLocaleString()}₽</p><button class="btn" onclick="game.bidAuction()">Поднять ставку (+500₽)</button>`:`<button class="btn" onclick="game.startAuction()">Начать аукцион</button>`}</div>`;
+                return;
+            }
+            let items=this.markets[type]||[];
+            let grid='<div class="grid">';
+            items.forEach(item=>{
+                let imeiBlock='';
+                if(type==='budget'){
+                    if(!item.imeiChecked) imeiBlock=`<button class="btn" style="font-size:9px;" onclick="game.checkIMEI(${item.id})">🔍 Проверить IMEI (500₽)</button><div class="imei-info">❓ Неизвестен</div>`;
+                    else imeiBlock=`<div class="imei-info">${item.imeiStatus==='stolen'?'⚠️ КРАДЕНЫЙ':'✅ ЧИСТЫЙ'}</div>`;
+                } else imeiBlock=`<div class="imei-info">${item.imeiStatus==='stolen'?'⚠️ КРАДЕНЫЙ':'✅ ЧИСТЫЙ'}</div>`;
+                grid+=`<div class="card"><span class="tag tag-tier${item.model.tier}">Тир ${item.model.tier}</span><div style="font-weight:bold;">${item.model.name}${item.isBrick?' 💀':''}</div><div>${item.defect?`🔧 ${item.defect.name}`:'📱 Исправен'}</div><div class="seller-info">👤 ${item.seller}</div>${imeiBlock}<div style="font-size:22px;font-weight:800;margin:8px 0;color:var(--neon-green);">${item.buyPrice.toLocaleString()}₽</div><button class="btn btn-buy" onclick="game.buyDevice(${item.id},'${type}')">Купить</button></div>`;
+            });
+            grid+='</div>';
+            document.getElementById('content').innerHTML=grid+`<button class="btn" onclick="game.refreshMarket('${type}')">🔄 Обновить ${title}</button>`;
+        }
+
+        renderParts() {
+            let html='<div class="grid">';
+            PARTS_CATALOG.forEach(p=>{
+                html+=`<div class="card"><b>${p.name}</b><div>Качество ${Math.floor(p.quality*100)}%</div><div style="color:var(--neon-cyan);">${p.basePrice}₽</div><button class="btn" onclick="game.buyPart('${p.id}')">Купить</button></div>`;
+            });
+            html+=`</div><div>📦 Запчастей: ${this.parts.length}</div>`;
+            document.getElementById('content').innerHTML=html;
+        }
+
+        renderWarehouse() {
+            let items=this.inventory.filter(i=>i.status==='warehouse'||i.status==='dead');
+            if(!items.length){ document.getElementById('content').innerHTML='<div>Склад пуст</div>'; return; }
+            let grid='<div class="grid">';
+            items.forEach(dev=>{
+                let dead=dev.status==='dead';
+                let badge=dead?'<span style="background:#ff3366;">💀 КИРПИЧ</span>':(dev.imeiStatus==='stolen'?'<span style="background:#ff6600;">⚠️ КРАДЕНЫЙ</span>':'');
+                let deadBtn=dead?`<button class="btn btn-danger" onclick="game.disposeDevice(${dev.id})">🗑️ Утилизировать</button>`:'';
+                let sell='';
+                if(!dead){
+                    let sugg=this.getSuggestedPrice(dev);
+                    sell=`<input id="p-${dev.id}" placeholder="Цена продажи" value="${sugg}"><div class="suggested">💡 Рек. цена: ${sugg}₽</div><button class="btn" onclick="game.putOnShop(${dev.id},document.getElementById('p-${dev.id}').value)">🏷️ На витрину</button>`;
+                }
+                grid+=`<div class="card"><div><b>${dev.model.name}</b> ${badge}</div><div>${dev.defect?`🔧 ${dev.defect.name}`:'✅ Исправен'}</div>${deadBtn}${sell}</div>`;
+            });
+            grid+='</div>';
+            document.getElementById('content').innerHTML=grid;
+        }
+
+        renderService() {
+            let need=this.inventory.filter(i=>i.defect && i.status==='warehouse' && !i.isBrick);
+            if(need.length===0){ document.getElementById('content').innerHTML='<div>Нет устройств, требующих ремонта</div>'; return; }
+            let grid='<div class="grid">';
+            need.forEach(dev=>{
+                let fee=this.getServiceFee(dev);
+                let comp=this.parts.filter(p=>p.type===dev.defect.id);
+                let btns=comp.map(p=>`<button class="btn" style="font-size:9px;" onclick="game.startRepair(${dev.id},${p.uid})">🔩 ${p.name} + ${fee}₽</button>`).join('');
+                let expressBtn=comp.length?`<button class="btn" style="font-size:9px;" onclick="game.startRepair(${dev.id},${comp[0].uid}, true)">⚡ Экспресс (2x цена, 90%)</button>`:'';
+                grid+=`<div class="card"><b>${dev.model.name}</b><div>Дефект: ${dev.defect.name}</div><div>${btns||'<span style="color:red;">Нет деталей</span>'}</div><div>${expressBtn}</div></div>`;
+            });
+            grid+='</div>';
+            document.getElementById('content').innerHTML=grid;
+        }
+
+        renderShop() {
+            let shopItems=this.inventory.filter(i=>i.status==='shop');
+            if(this.shopOrder.length) shopItems.sort((a,b)=>{
+                let ia=this.shopOrder.indexOf(a.id), ib=this.shopOrder.indexOf(b.id);
+                if(ia===-1) return 1;
+                if(ib===-1) return -1;
+                return ia-ib;
+            });
+            shopItems=shopItems.filter(d=>!this.hiddenShopItems.includes(d.id));
+            if(!shopItems.length){ document.getElementById('content').innerHTML='<div>Витрина пуста</div>'; return; }
+            let grid='<div class="grid">';
+            shopItems.forEach(d=>{
+                grid+=`<div class="card" style="border-color:var(--neon-green);"><b>${d.model.name}</b> ${d.imeiStatus==='stolen'?'<span class="tag tag-stolen">КРАДЕНЫЙ</span>':''}<div>💰 ${d.sellPrice.toLocaleString()}₽</div><div class="flex-btns"><button class="btn" onclick="game.moveUpShop(${d.id})">⬆️</button><button class="btn" onclick="game.moveDownShop(${d.id})">⬇️</button><button class="btn" onclick="game.hideShopItem(${d.id})">🙈 Скрыть</button><button class="btn" onclick="game.cancelSale(${d.id})">Снять</button></div></div>`;
+            });
+            grid+='</div>';
+            document.getElementById('content').innerHTML=grid;
+        }
+
+        renderClients() {
+            let html = '<div class="grid">';
+            if(this.customerBase.length===0) html += '<div class="card">Нет клиентов</div>';
+            else this.customerBase.forEach(c=>{
+                html += `<div class="card"><b>${c.name}</b>, ${c.age} лет, ${c.profession}<br>Лояльность: ${c.loyalty}/10<br>Покупок: ${c.purchases}<br>История: ${c.history.slice(-3).map(h=>`${h.item} за ${h.price}₽`).join(', ') || 'нет'}</div>`;
+            });
+            html += '</div>';
+            document.getElementById('content').innerHTML = html;
+        }
+
+        renderBusinessPlan() {
+            let html = '<div class="grid">';
+            this.businessPlan.forEach(goal => {
+                let progress = goal.target > 0 ? Math.min(100, (goal.progress / goal.target)*100) : 0;
+                let timeLeft = Math.max(0, Math.floor((goal.deadline - Date.now())/1000));
+                html += `<div class="card"><b>${goal.description}</b><div class="progress-container"><div class="progress-bar" style="width:${progress}%"></div></div><p>Прогресс: ${Math.floor(progress)}% | Осталось: ${timeLeft} сек</p>${goal.completed ? '<p>✅ Завершено</p>' : ''}</div>`;
+            });
+            html += '</div>';
+            document.getElementById('content').innerHTML = html;
+        }
+
+        renderRecoin() {
+            let canvasId = 'recoinChart';
+            document.getElementById('content').innerHTML = `
+            <div class="card"><h3>₿ ReCoin</h3><p>Курс: 1 ReCoin = ${Math.floor(this.recoinRate)}₽</p><p>Ваш баланс: ${this.recoinBalance.toFixed(2)} ReCoin</p>
+            <canvas id="${canvasId}" width="300" height="100"></canvas>
+            <input type="number" id="recoin-amount" placeholder="Количество" value="1" step="0.1">
+            <button class="btn" onclick="game.buyRecoin(parseFloat(document.getElementById('recoin-amount').value)||0)">Купить</button>
+            <button class="btn" onclick="game.sellRecoin(parseFloat(document.getElementById('recoin-amount').value)||0)">Продать</button></div>`;
+            setTimeout(()=>{
+                const canvas = document.getElementById(canvasId);
+                if(!canvas) return;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0,0,canvas.width,canvas.height);
+                if(this.recoinRateHistory.length<2) return;
+                let min = Math.min(...this.recoinRateHistory);
+                let max = Math.max(...this.recoinRateHistory);
+                if(max===min) max=min+1;
+                ctx.strokeStyle = '#bc13fe';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                for(let i=0;i<this.recoinRateHistory.length;i++){
+                    let x = (i/(this.recoinRateHistory.length-1))*canvas.width;
+                    let y = canvas.height - ((this.recoinRateHistory[i]-min)/(max-min))*(canvas.height-10)-5;
+                    if(i===0) ctx.moveTo(x,y);
+                    else ctx.lineTo(x,y);
+                }
+                ctx.stroke();
+            },10);
+        }
+
+        renderExtra() {
+            let loansHtml='';
+            if(this.loans.length){
+                loansHtml='<h3>Активные кредиты</h3>';
+                this.loans.forEach((loan,idx)=>{
+                    loansHtml+=`<div class="card"><b>Кредит ${loan.amount.toLocaleString()}₽</b><br>К возврату: ${Math.floor(loan.totalToPay).toLocaleString()}₽<br><button class="btn" onclick="game.repayLoan(${idx})">Погасить</button></div>`;
+                });
+            }
+            document.getElementById('content').innerHTML=`<div class="grid"><div class="card"><h3>💰 Кредиты</h3><button class="btn" onclick="game.takeLoan(100000,10,30)">Взять 100 000₽ (10%)</button><button class="btn" onclick="game.takeLoan(500000,15,60)">Взять 500 000₽ (15%)</button>${loansHtml}</div><div class="card"><h3>📢 Фальшивые отзывы</h3><button class="btn" onclick="game.buyFakeReviews()">Заказать (5000₽)</button></div><div class="card"><h3>⚡ Режим безумия</h3><button class="btn" onclick="game.toggleCrazyMode()">${this.crazyModeUnlocked?(this.crazyMode?'Выключить':'Включить'):'Купить (500 реп)'}</button></div><div class="card"><h3>🎨 Темы</h3><button class="btn" onclick="game.setTheme('dark')">Тёмная</button><button class="btn" onclick="game.setTheme('light')">Светлая</button><button class="btn" onclick="game.setTheme('cyberpunk')">Киберпанк</button><button class="btn" onclick="game.setTheme('vintage')">Винтаж</button></div></div>`;
+        }
+
+        renderSkills() {
+            document.getElementById('content').innerHTML = `<h2>📖 НАВЫКИ</h2><div class="grid"><div class="card"><h3>🔧 Скорость ремонта</h3><p>Уровень ${this.skills.repairSpeed}</p><button class="btn" onclick="game.upgradeSkill('repairSpeed')">Прокачать (450 реп)</button></div><div class="card"><h3>💰 Торговля</h3><p>Уровень ${this.skills.trading}</p><button class="btn" onclick="game.upgradeSkill('trading')">Прокачать (750 реп)</button></div></div>`;
+        }
+
+        renderFranchise() {
+            let html = `<div class="card"><h3>🏢 Франшиза</h3><p>У вас ${this.stores} магазин(ов).</p><p>Новый магазин: ${this.storeUpgradeCost.toLocaleString()}₽</p><button class="btn" onclick="game.openNewStore()">Открыть магазин</button></div>`;
+            for(let i=0; i<this.stores; i++) {
+                let s = this.storeUpgrades[i];
+                html += `<div class="card"><h4>Магазин ${i+1}</h4><p>🎨 Дизайн: ${s.interior} <button class="btn" onclick="game.upgradeStore(${i},'interior')">Улучшить (${(s.interior+1)*5000}₽)</button></p><p>🔒 Безопасность: ${s.security} <button class="btn" onclick="game.upgradeStore(${i},'security')">Улучшить (${(s.security+1)*5000}₽)</button></p><p>📢 Маркетинг: ${s.marketing} <button class="btn" onclick="game.upgradeStore(${i},'marketing')">Улучшить (${(s.marketing+1)*5000}₽)</button></p></div>`;
+            }
+            document.getElementById('content').innerHTML = html;
+        }
+
+        renderEmployees() {
+            let html='<div class="grid">';
+            html+=`<div class="card"><h3>Продавец</h3>${this.employees.seller?`<p>Уровень ${this.employees.seller.level}<br>Зарплата ${this.employees.seller.salary}₽/день</p><button class="btn" onclick="game.upgradeEmployee('seller')">Повысить</button>`:`<button class="btn" onclick="game.hireEmployee('seller')">Нанять (10 000₽)</button>`}</div>`;
+            html+=`<div class="card"><h3>Мастер</h3>${this.employees.repairer?`<p>Уровень ${this.employees.repairer.level}<br>Зарплата ${this.employees.repairer.salary}₽/день</p><button class="btn" onclick="game.upgradeEmployee('repairer')">Повысить</button>`:`<button class="btn" onclick="game.hireEmployee('repairer')">Нанять (15 000₽)</button>`}</div>`;
+            html+=`<div class="card"><h3>Менеджер</h3>${this.employees.manager?`<p>Уровень ${this.employees.manager.level}<br>Зарплата ${this.employees.manager.salary}₽/день</p><button class="btn" onclick="game.upgradeEmployee('manager')">Повысить</button>`:`<button class="btn" onclick="game.hireEmployee('manager')">Нанять (20 000₽)</button>`}</div>`;
+            html+='</div>';
+            document.getElementById('content').innerHTML = html;
+        }
+
+        renderOrders() {
+            let html='<div class="grid">';
+            this.activeOrders.forEach(order => {
+                const timeLeft = Math.max(0, Math.floor((order.deadline - Date.now()) / 1000));
+                html += `<div class="card"><h3>Заказ: ${order.quantity} шт. ${order.model.name}</h3><p>Цена: ${order.pricePerUnit}₽/шт.</p><p>Осталось: ${timeLeft} сек</p><button class="btn" onclick="game.completeOrder(${order.id})">Выполнить</button></div>`;
+            });
+            if(this.activeOrders.length === 0) html += '<div class="card">Нет активных заказов.</div>';
+            html += '</div>';
+            document.getElementById('content').innerHTML = html;
+        }
+
+        renderSaves() {
+            document.getElementById('content').innerHTML = `<div><div class="flex-btns"><button class="btn" id="msave">💾 Сохранить</button><button class="btn" id="mload">📀 Загрузить</button><button class="btn btn-danger" id="mreset">⚠️ Сброс</button></div></div>`;
+            document.getElementById('msave').onclick = () => { this.saveGame(); };
+            document.getElementById('mload').onclick = () => { this.loadGame(); this.generateAllMarkets(); this.renderNav(); this.render(); };
+            document.getElementById('mreset').onclick = () => { if (confirm("Сбросить всё?")) { localStorage.removeItem('rephone_save_v4'); location.reload(); } };
+        }
+
+        renderAbout() {
+            document.getElementById('content').innerHTML = `<div><h2>Re:Phone Game 4.0</h2><p>✨ Кастомный бренд, новостная лента, бизнес-план, ReCoin, прокачка магазинов, график доходов, клиенты с историей.</p></div>`;
+        }
+
+        init() {
+            const hasSave = this.loadGame();
+            if (!hasSave) {
+                this.money = 100000;
+                this.rep = 0;
+                this.lvl = 1;
+                this.inventory = [];
+                this.parts = [];
+                this.unlockedMarkets = ['budget'];
+                this.stores = 1;
+                this.storeUpgrades = [{ interior:0, security:0, marketing:0 }];
+                this.storeUpgradeCost = 150000;
+                this.skills = { repairSpeed: 0, trading: 0 };
+                this.loans = [];
+                this.activeOrders = [];
+                this.deliveries = [];
+                this.employees = { seller: null, repairer: null, manager: null };
+                this.achievements = [];
+                this.stats = { repairsCount: 0, totalSalesAmount: 0, employeesHiredCount: 0, trendSalesCount: 0, rarePurchased: 0 };
+                this.customerBase = [];
+                this.trendActive = false;
+                this.collectibleAuction = null;
+                this.newsFeed = [];
+                this.recoinBalance = 0;
+                this.recoinRate = 100;
+                this.recoinRateHistory = [100];
+                this.businessPlan = [];
+                this.historyMoney = [100000];
+                this.generateAllMarkets();
+                this.renderNav();
+                this.render();
+                this.startLoops();
+                this.initTrendCycle();
+                this.initCollectibleCycle();
+                this.initBusinessPlan();
+                document.getElementById('brand-modal').style.display = 'flex';
+                document.getElementById('confirm-brand').onclick = () => {
+                    let brand = document.getElementById('brand-input').value.trim();
+                    if (brand) this.brandName = brand;
+                    document.getElementById('brand-name').innerText = this.brandName;
+                    document.getElementById('brand-modal').style.display = 'none';
+                    this.startTutorial();
+                };
+            } else {
+                document.getElementById('brand-name').innerText = this.brandName;
+                this.generateAllMarkets();
+                this.renderNav();
+                this.render();
+                this.startLoops();
+                this.initTrendCycle();
+                this.initCollectibleCycle();
+                this.initBusinessPlan();
+            }
+        }
+
+        startTutorial() {
+            let steps = [
+                {title:"📱 ШАГ 1: КУПИТЕ ТЕЛЕФОН", desc:"Откройте раздел 'Авито' и купите телефон с дефектом."},
+                {title:"🔧 ШАГ 2: КУПИТЕ ЗАПЧАСТЬ", desc:"Перейдите в 'Запчасти' и купите деталь."},
+                {title:"🛠️ ШАГ 3: ОТРЕМОНТИРУЙТЕ", desc:"В 'Сервисе' начните ремонт."},
+                {title:"🏷️ ШАГ 4: НА ВИТРИНУ", desc:"На складе нажмите 'На витрину'."},
+                {title:"💰 ШАГ 5: ПРОДАЙТЕ", desc:"Дождитесь автоматической продажи."}
+            ];
+            let i = 0;
+            let showStep = () => {
+                if (i >= steps.length) {
+                    document.getElementById('tutorial-step-modal').style.display = 'none';
+                    return;
+                }
+                let modal = document.getElementById('tutorial-step-modal');
+                document.getElementById('tutorial-title').innerText = steps[i].title;
+                document.getElementById('tutorial-desc').innerText = steps[i].desc;
+                modal.style.display = 'flex';
+                document.getElementById('tutorial-next').onclick = () => {
+                    modal.style.display = 'none';
+                    i++;
+                    showStep();
+                };
+            };
+            showStep();
+        }
+    }
+
+    window.addEventListener('load', () => {
+        const game = new Game();
+        window.game = game;
+        game.init();
+    });
+</script>
+</body>
+</html>
